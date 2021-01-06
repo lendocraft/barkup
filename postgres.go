@@ -21,6 +21,8 @@ type Postgres struct {
 	DB string
 	// Connection Username
 	Username string
+	// Custom filename
+	Filename string
 	// Extra pg_dump options
 	// e.g []string{"--inserts"}
 	Options []string
@@ -29,7 +31,7 @@ type Postgres struct {
 // Export produces a `pg_dump` of the specified database, and creates a gzip compressed tarball archive.
 func (x Postgres) Export() *ExportResult {
 	result := &ExportResult{MIME: "text/plain"}
-	result.Path = fmt.Sprintf(`%v_%v.sql`, x.DB, time.Now().Unix())
+	result.Path = fmt.Sprintf(`%v_%v.sql`, time.Now().Format("2006-01-02_15.04.05"), x.Filename)
 	options := append(x.dumpOptions(), "-Fp", fmt.Sprintf(`-f%v`, result.Path))
 	out, err := exec.Command(PGDumpCmd, options...).Output()
 	if err != nil {
