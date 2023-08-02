@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 //////////////
@@ -29,7 +30,7 @@ func makeErr(err error, out string) *Error {
 	if err != nil {
 		var exitError *exec.ExitError
 		if errors.As(err, &exitError) {
-			err = fmt.Errorf("%s : %s", exitError.Error(), exitError.Stderr)
+			err = fmt.Errorf("%s : %s", exitError.Error(), strings.Trim(string(exitError.Stderr), "\n"))
 		}
 
 		return &Error{
